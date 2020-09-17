@@ -2,7 +2,7 @@ const word = document.getElementById("word");
 const text = document.getElementById("text");
 const scoreEl = document.getElementById("score");
 const timeEl = document.getElementById("time");
-const endgameEl = document.getElementById("end-game");
+const endgameEl = document.getElementById("end-game-container");
 const settingsBtn = document.getElementById("settings-btn");
 const settings = document.getElementById("settings");
 const settingsForm = document.getElementById("settings-form");
@@ -34,15 +34,26 @@ const words = [
   "drag",
   "loving",
 ];
-
 // Init word
 let randomWord;
-
 // Init score
 let score = 0;
-
 //Init time
 let time = 10;
+// Set difficulty to value in local storage
+let difficulty =
+  localStorage.getItem("difficulty") !== null
+    ? localStorage.getItem("difficulty")
+    : "medium";
+
+// Set difficulty select value
+difficultySelect.value = difficulty;
+
+// Focus on text on start
+text.focus();
+
+// Start counting down
+const timeInterval = setInterval(updateTime, 1000);
 
 // Generate a random word from array
 function getRandomWord() {
@@ -55,6 +66,27 @@ function addWordToDom() {
   word.innerHTML = randomWord;
 }
 
+// Update time
+function updateTime() {
+  time--;
+  timeEl.innerHTML = time;
+  if (time === 0) {
+    clearInterval(timeInterval);
+    // End Game
+    gameOver();
+  }
+}
+
+// Game over, show end screen
+function gameOver() {
+  endgameEl.innerHTML = `
+  <h1> Time ran out </h1>
+  <p> Your final score is ${score}</p>
+  <button onclick='location.reload()'>Reload</button>
+  `;
+  endgameEl.style.display = "flex";
+}
+
 addWordToDom();
 
 function updateScore() {
@@ -63,12 +95,35 @@ function updateScore() {
 }
 
 // Events
+
+//Typing
+
 text.addEventListener("input", (e) => {
   const insertedText = e.target.value;
-  console.log(insertedText);
+
   if (insertedText === randomWord) {
     addWordToDom();
     updateScore();
     e.target.value = "";
+    if (difficulty === "hard") {
+      time += 2;
+    } else if (difficulty === "medium") {
+      time += 3;
+    } else {
+      time += 5;
+    }
   }
+});
+
+//settings btn click
+settingsBtn.addEventListener("click", () => {
+  settings.classList.toggle("hide");
+});
+
+// Settings select
+
+settingsForm.addEventListener("change", (e) => {
+  difficulty = e.target.value;
+  console.log(difficulty);
+  localStorage.setItem("difficulty", difficulty);
 });
