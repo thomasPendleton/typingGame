@@ -1,3 +1,9 @@
+// Possible updates to app
+// Fetch words from api
+// add at a later day
+// have 3 sets of words depending on the difficulty
+
+
 const word = document.getElementById("word");
 const text = document.getElementById("text");
 const scoreEl = document.getElementById("score");
@@ -8,8 +14,6 @@ const settings = document.getElementById("settings");
 const settingsForm = document.getElementById("settings-form");
 const difficultySelect = document.getElementById("difficulty");
 
-// Fetch words from api
-// add at a later day
 
 // Words to cycle through to type
 const words = [
@@ -106,11 +110,11 @@ text.addEventListener("input", (e) => {
     updateScore();
     e.target.value = "";
     if (difficulty === "hard") {
-      time += 2;
+      time += 1;
     } else if (difficulty === "medium") {
-      time += 3;
+      time += 2;
     } else {
-      time += 5;
+      time += 4;
     }
   }
 });
@@ -124,6 +128,14 @@ settingsBtn.addEventListener("click", () => {
 
 settingsForm.addEventListener("change", (e) => {
   difficulty = e.target.value;
-  console.log(difficulty);
   localStorage.setItem("difficulty", difficulty);
 });
+
+
+
+
+
+
+// get from api
+// https://random-word-api.herokuapp.com/word?number=10000
+// This gets 10000 random words
